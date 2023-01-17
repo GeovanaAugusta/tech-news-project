@@ -29,7 +29,6 @@ def fetch(url):
 # Requisito 2
 def scrape_updates(html_content):
     selector = Selector(text=html_content)
-    print(selector)
 
     news = selector.css(".entry-title a::attr(href)").getall()
 
@@ -41,12 +40,21 @@ def scrape_updates(html_content):
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+
+    next_page_url = selector.css("a.next::attr(href)").get()
+
+    # print("next", next_page_url) retorna None quando encontra nada
+    if next_page_url is not None:
+        return next_page_url
+    else:
+        return None
 
 
 # Requisito 4
 def scrape_news(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    print(selector)
 
 
 # Requisito 5
@@ -86,5 +94,10 @@ def get_tech_news(amount):
 # O título está no atributo title em um elemento âncora (<a>)
 # Dentro de um h3 em elementos que possuem classe product_pod
 # titles = selector.css(".product_pod h3 a::attr(title)").getall()
-# Tamanho de um array 
+# Tamanho de um array
 # https://www.digitalocean.com/community/tutorials/find-the-length-of-a-list-in-python
+
+# Requisito 3
+# Dia 02
+# Descobre qual é a próxima página
+    # next_page_url = selector.css(".next a::attr(href)").get()
