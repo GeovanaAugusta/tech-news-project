@@ -58,20 +58,29 @@ def search_by_tag(tag):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
-    # news_by_category = []
+    news_by_category = []
 
-    # news = search_news({
-    #     "category": {
-    #         # Deve buscar as notícias do banco de dados pela tag
-    #         "$regex": category,
-    #         # A busca deve ser case insensitive
-    #         "$options": "i"
-    #     }
-    # })
+    news = search_news({
+        "category": {
+            # Deve buscar as notícias do banco de dados pela categoria
+            "$regex": category,
+            # A busca deve ser case insensitive
+            "$options": "i"
+        }
+    })
+
+    news_by_category = [(new["title"], new["url"]) for new in news]
+    # print(news_by_category)
+
+    if len(news_by_category) > 0:
+
+        return news_by_category
+
+    else:
+        return []
 
 # SOURCE
-# Requisito 6
+# Requisitos 6 a 9
 # Dia 02
 # Buscas
 # client = MongoClient()
