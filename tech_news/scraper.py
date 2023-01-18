@@ -53,8 +53,38 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_news(html_content):
-    selector = Selector(text=html_content)
-    print(selector)
+    selector = Selector(html_content)
+# [<Selector xpath="descendant-or-self::link[@rel = 'canonical']"
+# data='<link rel="canonical" href="https://b...'>],
+    url = selector.css("link[rel='canonical']::attr(href)").get()
+    # print("url", url)
+    title = selector.css("h1.entry-title::text").get()
+    timestamp = selector.css("li.meta-date::text").get()
+    writer = selector.css("span.author a::text").get()
+    comments_count = selector.css("h1.title-block::text").re_first("/d")
+    # .xpath('//tag mãe[contains(@class, "nome da classe")]/tag filha)
+    # Sem transformar em string o texto do sumário vem dentro da tag <p>
+    s = (selector.xpath("string(//div[contains(@class,'entry-content')]/p)")
+         .get())
+    print(s)
+    tags = selector.css("section.post-tags a::text").getall()
+    category = selector.css("span.label::text").get()
+
+    if title is None:
+        return None
+    else:
+        news = {
+                'url': url,
+                'title': title.rstrip(),
+                'timestamp': timestamp,
+                'writer': writer,
+                'comments_count': comments_count or 0,
+                'summary': s.rstrip(),
+                'tags': tags or [],
+                'category': category
+            }
+
+    return news
 
 
 # Requisito 5
@@ -101,3 +131,11 @@ def get_tech_news(amount):
 # Dia 02
 # Descobre qual é a próxima página
     # next_page_url = selector.css(".next a::attr(href)").get()
+
+# Requisito 4
+# Remover caracter no final
+# https://www.freecodecamp.org/news/python-strip-how-to-trim-a-string-or-line/#:~:text=of%20a%20string.-,Use%20the%20.,the%20end%20of%20a%20string.
+# Pegar apenas número = re_first("[0-9]") ou "/d"
+# https://parsel.readthedocs.io/en/latest/usage.html
+# Pelo que entendi o url canônico é o + representativo em um grupo de páginas
+# Evita problemas de conteúdo duplicado na otimização de mecanismos de pesquisa
