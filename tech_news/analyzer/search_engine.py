@@ -1,5 +1,6 @@
 # Requisito 6
 from tech_news.database import search_news
+from datetime import datetime
 
 
 def search_by_title(title):
@@ -29,7 +30,28 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+
+    news_by_date = []
+
+    try:
+        previous_date = datetime.strptime(date, "%Y-%m-%d")
+
+        final_date = datetime.strftime(previous_date, "%d/%m/%Y")
+
+        news = search_news({
+            "timestamp": final_date,
+            }
+        )
+
+        news_by_date = [(new["title"], new["url"]) for new in news]
+
+        if len(news_by_date) > 0:
+            return news_by_date
+        else:
+            return []
+
+    except ValueError:
+        raise ValueError("Data inválida")
 
 
 # Requisito 8
@@ -94,3 +116,8 @@ def search_by_category(category):
 # insensitive case
 # https://stackoverflow.com/questions/8246019/case-insensitive-search-in-mongo
 # https://www.mongodb.com/docs/manual/reference/operator/query/regex/
+
+# Como converter data em python
+# https://stackoverflow.com/questions/502726/converting-date-between-dd-mm-yyyy-and-yyyy-mm-dd
+
+# https://stackoverflow.com/questions/2052390/manually-raising-throwing-an-exception-in-python
