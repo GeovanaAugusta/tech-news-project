@@ -1,6 +1,7 @@
 from time import sleep
 import requests
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -30,10 +31,10 @@ def fetch(url):
 def scrape_updates(html_content):
     selector = Selector(text=html_content)
 
-    news = selector.css(".entry-title a::attr(href)").getall()
+    urls_news = selector.css(".entry-title a::attr(href)").getall()
 
-    if len(news) > 0:
-        return news
+    if len(urls_news) > 0:
+        return urls_news
     else:
         return []
 
@@ -89,7 +90,37 @@ def scrape_news(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    URL_BASE = "https://blog.betrybe.com/"
+    # Tenho meu retorno do fetch para a url base e posteriores
+    response_selector = fetch(URL_BASE)
+    news = []
+
+    while len(news) < amount:
+        # A partir da lista de urls obtidas
+        urls_news = scrape_updates(response_selector)
+
+        for url in urls_news:
+
+            # Faço fetch url a url -> array de objetos com infos sobre as news
+            # 2 horas depois: como é item a item que vou adicionando
+            # Precisa ser append e não extend
+            news.append(scrape_news(fetch(url)))
+
+            # Interrompe o fluxo de next ou quebra tudo
+            if len(news) == amount:
+                break
+
+        # Aqui obtenho a próxima page, pela url dela pra fazer um novo fetch e
+        # assim renderizar a nova pág
+        next_page_url = scrape_next_page_link(response_selector)
+        # print("next_page_url", next_page_url)
+
+        response_selector = fetch(next_page_url)
+
+    create_news(news)
+    # print("news", news)
+
+    return news
 
 # SOURCE
 
@@ -139,3 +170,8 @@ def get_tech_news(amount):
 # https://parsel.readthedocs.io/en/latest/usage.html
 # Pelo que entendi o url canônico é o + representativo em um grupo de páginas
 # Evita problemas de conteúdo duplicado na otimização de mecanismos de pesquisa
+
+# Requisito 5
+# Dia 02
+# Recurso por recurso
+# https://www.freecodecamp.org/news/python-list-append-vs-python-list-extend/#:~:text=append()%20adds%20a%20single,the%20end%20of%20the%20list.
