@@ -92,12 +92,12 @@ def scrape_news(html_content):
 def get_tech_news(amount):
     URL_BASE = "https://blog.betrybe.com/"
     # Tenho meu retorno do fetch para a url base e posteriores
-    response_selector = fetch(URL_BASE)
+    response_text = fetch(URL_BASE)
     news = []
 
     while len(news) < amount:
         # A partir da lista de urls obtidas
-        urls_news = scrape_updates(response_selector)
+        urls_news = scrape_updates(response_text)
 
         for url in urls_news:
 
@@ -112,10 +112,10 @@ def get_tech_news(amount):
 
         # Aqui obtenho a próxima page, pela url dela pra fazer um novo fetch e
         # assim renderizar a nova pág
-        next_page_url = scrape_next_page_link(response_selector)
+        next_page_url = scrape_next_page_link(response_text)
         # print("next_page_url", next_page_url)
 
-        response_selector = fetch(next_page_url)
+        response_text = fetch(next_page_url)
 
     create_news(news)
     # print("news", news)
