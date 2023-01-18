@@ -34,22 +34,41 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_tag(tag):
-    """Seu código deve vir aqui"""
-    # news_by_title = []
+    news_by_tag = []
 
-    # news = search_news({
-    #     "tag": {
-    #         # Deve buscar as notícias do banco de dados pela tag
-    #         "$regex": tag,
-    #         # A busca deve ser case insensitive
-    #         "$options": "i"
-    #     }
-    # })
+    news = search_news({
+        "tags": {
+            # Deve buscar as notícias do banco de dados pela tag
+            "$regex": tag,
+            # A busca deve ser case insensitive
+            "$options": "i"
+        }
+    })
+
+    news_by_tag = [(new["title"], new["url"]) for new in news]
+    # print(news_by_tag)
+
+    if len(news_by_tag) > 0:
+
+        return news_by_tag
+
+    else:
+        return []
 
 
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    # news_by_category = []
+
+    # news = search_news({
+    #     "category": {
+    #         # Deve buscar as notícias do banco de dados pela tag
+    #         "$regex": category,
+    #         # A busca deve ser case insensitive
+    #         "$options": "i"
+    #     }
+    # })
 
 # SOURCE
 # Requisito 6
